@@ -1,7 +1,10 @@
 export default function (api) {
   return {
-    login() {
-      return api.post('auth/password')
+    register (data) {
+      return api.post('/register', data)
+    },
+    login (data) {
+      return api.post('/login', data)
     },
   }
 }

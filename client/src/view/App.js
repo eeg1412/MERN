@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom'
+import { authApi } from "../api";
 
 //将state映射到props函数
 function mapStateToProps (state) {
@@ -18,25 +19,47 @@ function mapDispatchToProps (dispatch) {
 }
 
 class Counter extends React.Component {
-
+  constructor(props) {
+    super(props);
+    this.state = {
+      account: '',
+      password: ''
+    };
+    this.setAccount = this.setAccount.bind(this);
+    this.setPassword = this.setPassword.bind(this);
+  }
+  setAccount (event) {
+    this.setState({ account: event.target.value });
+  }
+  setPassword (event) {
+    this.setState({ password: event.target.value });
+  }
   render () {
-
+    const { account, password } = this.state;
     return (
       <div>
         <h1>请登录</h1>
         <div>
-          <p>账号：<input type="text" /></p>
-          <p>密码：<input type="password" /></p>
+          <p>账号：<input type="text" value={account} onChange={this.setAccount} /></p>
+          <p>密码：<input type="password" value={password} onChange={this.setPassword} /></p>
         </div>
-        <div><button onClick={this.goDatiPage}>登录</button><Link to="/register">注册</Link></div>
+        <div><button onClick={this.goLogin}>登录</button><Link to="/register">注册</Link></div>
       </div>
     )
 
 
   }
-  goDatiPage = () => {
-    //console.log(this.props)
-    // this.props.history.push("/dati")
+  goLogin = () => {
+    const params = {
+      account: this.state.account,
+      password: this.state.password
+    }
+    authApi.login(params).then(res => {
+      alert(res.data.msg);
+      if (res.data.code === 1) {
+        this.props.history.push('/');
+      }
+    });
   }
 }
 
